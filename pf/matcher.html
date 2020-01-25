@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang='en-US'>
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+  <style>
+
+    body {
+			text-align : center;
+		}
+		table {
+			border: 1px dotted black;
+		}
+		th {
+			border-bottom: 2px solid black;
+		}
+		tr > td:first-child {
+			border-left: none;
+		}
+		tr:last-child > td {
+			border-bottom: none;
+		}
+		td {
+			border-bottom: 1px dotted black;
+		}
+  </style>
+  <meta charset='UTF-8'>
+  <title>Table</title>
+	<script
+	  src="https://code.jquery.com/jquery-3.4.1.min.js"
+		  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+			  crossorigin="anonymous"> 
+	</script>
+</head>
+
+<body>
+  <div class="jumbotron text-center">
+    <h1>Input a State and Style</h1>
+  </div>
+  <form id="theForm">
+    <select name="state" form="theForm" required>
+      <option value="AL">Alabama</option>
+      <option value="AK">Alaska</option>
+      <option value="AZ">Arizona</option>
+      <option value="AR">Arkansas</option>
+      <option value="CA">California</option>
+      <option value="CO">Colorado</option>
+      <option value="CT">Connecticut</option>
+      <option value="DE">Delaware</option>
+      <option value="DC">District Of Columbia</option>
+      <option value="FL">Florida</option>
+      <option value="GA">Georgia</option>
+      <option value="HI">Hawaii</option>
+      <option value="ID">Idaho</option>
+      <option value="IL">Illinois</option>
+      <option value="IN">Indiana</option>
+      <option value="IA">Iowa</option>
+      <option value="KS">Kansas</option>
+      <option value="KY">Kentucky</option>
+      <option value="LA">Louisiana</option>
+      <option value="ME">Maine</option>
+      <option value="MD">Maryland</option>
+      <option value="MA">Massachusetts</option>
+      <option value="MI">Michigan</option>
+      <option value="MN">Minnesota</option>
+      <option value="MS">Mississippi</option>
+      <option value="MO">Missouri</option>
+      <option value="MT">Montana</option>
+      <option value="NE">Nebraska</option>
+      <option value="NV">Nevada</option>
+      <option value="NH">New Hampshire</option>
+      <option value="NJ">New Jersey</option>
+      <option value="NM">New Mexico</option>
+      <option value="NY">New York</option>
+      <option value="NC">North Carolina</option>
+      <option value="ND">North Dakota</option>
+      <option value="OH">Ohio</option>
+      <option value="OK">Oklahoma</option>
+      <option value="OR">Oregon</option>
+      <option value="PA">Pennsylvania</option>
+      <option value="RI">Rhode Island</option>
+      <option value="SC">South Carolina</option>
+      <option value="SD">South Dakota</option>
+      <option value="TN">Tennessee</option>
+      <option value="TX">Texas</option>
+      <option value="UT">Utah</option>
+      <option value="VT">Vermont</option>
+      <option value="VA">Virginia</option>
+      <option value="WA">Washington</option>
+      <option value="WV">West Virginia</option>
+      <option value="WI">Wisconsin</option>
+      <option value="WY">Wyoming</option>
+    </select> 
+    <input name="style" type="text" placeholder="Style">
+    <button type="button" id="submitBtn">Submit</button>
+  </form>
+	<br>
+	<table align="center">
+		<thead id="headers"></thead>
+		<tbody id="tableContents"></tbody>
+	</table>
+
+	<script>
+	  /*
+	  JQuery which parses user input and generates a table containing brewery name and city
+	  */
+		$("#submitBtn").click(function() {
+			if(!$("#headers").is(":empty")) {
+				$("#headers").empty();
+			}
+			$("#tableContents").empty();
+			let input = "/pf/matcher?state=" + $('[name="state"]').val()
+					+ "&style=" + $('[name="style"]').val();
+			$.getJSON(input, processData);
+		});
+		
+		function processData(result) {
+			$("#headers").append("<th>Beer</th>");
+			$("#headers").append("<th>Brewery</th>");
+			$("#headers").append("<th>City</th>");
+			$.each(result, function(i, item) {
+				$("#tableContents").append("<tr>");
+				$("#tableContents").append("<td>" + item.name + "</td>");
+				$("#tableContents").append("<td>" + item.brewery + "</td>");
+				$("#tableContents").append("<td>" + item.city + "</td>");
+				$("#tableContents").append("</tr>");
+			});
+		}
+		
+	  /* Overrides enter button action
+	  */
+		$(document).on("keypress", function(e) {
+			if(e.keyCode == 13) {
+				e.preventDefault();
+				$("#submitBtn").trigger("click");
+			}
+		});
+	</script>
+</body>
+</html>
+

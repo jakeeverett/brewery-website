@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Demo Breweries</title>
+        <meta charset="utf-8">
+        <!--link rel="stylesheet" type="text/css" href="style.css"-->
+				<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <style>
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            body > div {
+                float: left;
+            }
+
+            #map {
+                width: 67%;
+                height: 100%;
+	        overflow: hidden;
+            }
+
+	    #table-guy {
+	        overflow: auto;
+	    }
+
+            #form-left {
+                background-color: lightblue;
+                width: 33%;
+	        max-height: 100vh;
+	        overflow: auto;
+            }
+	    
+            #form-left > table {
+                overflow-y: scroll;
+            }
+	   
+            .InsideContent {
+                display: inline-block;
+            }
+        </style>
+				<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"> 
+				</script>
+    </head>
+    
+    <body>
+        <div id="form-left" class="InsideContent">
+            <h1>Brewery Search by State</h1>
+            <form>
+                <input name="state" type="text" placeholder="Input State to search">
+                <button type="button" id="submitBtn">Submit</button>
+            </form>
+            <table id="table-guy" align="center">
+                <thead id="headers"></thead>
+                <tbody id="tableContents"></tbody>
+            </table>
+        </div>
+        <div id="map" class="InsideContent">
+        </div>
+        <script>
+            var map;
+            
+            $("#submitBtn").click(function() {
+                if(!$("#headers").is(":empty")) {
+                    $("#headers").empty();
+                }
+                $("#tableContents").empty();
+                let input = "/pf/locator?state=" + $('[name="state"]').val();
+                $.getJSON(input, processData);
+            });
+
+            function processData(result) {
+                $("#headers").append("<th>Brewery</th>");
+                $("#headers").append("<th>City</th>");
+                $("#headers").append("<th>State</th>");
+                $.each(result, function(i, item) {
+                    $("#tableContents").append("<tr>");
+                    $("#tableContents").append("<td>" + item.name + "</td>");
+                    $("#tableContents").append("<td>" + item.city + "</td>");
+                    $("#tableContents").append("<td>" + item.state + "</td>");
+                    $("#tableContents").append("</tr>");
+                    var marker = new google.maps.Marker({position: { lat: item.lat, lng: item.lng }, map: map})
+                });
+            }
+						
+            $(document).on("keypress", function(e) {
+                if(e.keyCode == 13) {
+                    e.preventDefault();
+                    $("#submitBtn").trigger("click");
+                }
+            });
+            
+            function initMap() {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    center: {lat: 32.1656, lng: -82.9001},
+                    zoom: 7
+                });
+                //var marker = new google.maps.Marker({position: { lat: 33.9517, lng: -83.3761 }, map: map});
+            }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAoQKItAjJkxDgN-uPhll4jtR4nfON7gzs&callback=initMap"
+    async defer></script>
+    </body>
+</html>

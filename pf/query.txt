@@ -1,0 +1,1 @@
+select beers.name, breweries.name as brewery from beers inner join breweriesrs.brewery_id = breweries.id where state like '%CA%' order by brewery;
